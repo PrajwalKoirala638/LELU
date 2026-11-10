@@ -4,15 +4,18 @@
 
 ### 🔍 Raw, machine-readable law enforcement misconduct data for New York City 🏙️
 
-**📣 Published by [The Legal Aid Society of NYC](https://legalaidnyc.org)** · 🌐 [Live LELU app](https://legaidsoc.shinyapps.io/cap_search/) · ℹ️ [About LELU](https://legalaidnyc.org/law-enforcement-look-up/)
+**📣 Data from [The Legal Aid Society of NYC](https://legalaidnyc.org)** · 🌐 [Live LELU app](https://legaidsoc.shinyapps.io/cap_search/) · ℹ️ [About LELU](https://legalaidnyc.org/law-enforcement-look-up/) · 🍴 [Upstream repo](https://github.com/the-legal-aid-society/LELU)
 
 ![Data: TSV + YAML](https://img.shields.io/badge/data-TSV%20%2B%20YAML-blue)
-![Publisher: Legal Aid Society](https://img.shields.io/badge/publisher-Legal%20Aid%20Society%20of%20NYC-darkblue)
 ![Source: public records](https://img.shields.io/badge/source-public%20records-green)
-![Updated with LELU](https://img.shields.io/badge/updates-with%20each%20LELU%20release-orange)
-![Support: limited](https://img.shields.io/badge/support-limited-lightgrey)
+![Folders: 9](https://img.shields.io/badge/data%20folders-9-purple)
+![Fork](https://img.shields.io/badge/repo-fork%20of%20Legal%20Aid%20LELU-lightgrey)
 
 </div>
+
+---
+
+> 🍴 **This is a fork.** The original, authoritative repository is [`the-legal-aid-society/LELU`](https://github.com/the-legal-aid-society/LELU), maintained by The Legal Aid Society. This fork adds documentation and example code. For the most current data, sync from or use the upstream repository.
 
 ---
 
@@ -20,53 +23,54 @@
 
 1. [👀 At a glance](#-at-a-glance)
 2. [❓ What is this?](#-what-is-this)
-3. [🗓️ Why it exists: the repeal of 50-a](#️-why-it-exists-the-repeal-of-50-a)
-4. [🧭 About the data and where it comes from](#-about-the-data-and-where-it-comes-from)
-5. [🗂️ Repository layout](#️-repository-layout)
-6. [🚀 Quick start](#-quick-start)
-7. [📊 Visualizing the data](#-visualizing-the-data)
-8. [🧪 Validating and profiling the data](#-validating-and-profiling-the-data)
-9. [📚 Data dictionary template](#-data-dictionary-template)
-10. [🪪 Identifying officers responsibly](#-identifying-officers-responsibly)
-11. [⚠️ Limitations and caveats](#️-limitations-and-caveats)
-12. [🧑‍⚖️ Responsible use](#️-responsible-use)
-13. [🔄 Update cadence](#-update-cadence)
-14. [📝 Citing this data](#-citing-this-data)
-15. [🤝 Support and contributions](#-support-and-contributions)
-16. [📜 License and terms](#-license-and-terms)
-17. [🔤 Glossary](#-glossary)
-18. [🙋 FAQ](#-faq)
-19. [🙏 Credits](#-credits)
+3. [🎁 Benefits](#-benefits)
+4. [🗓️ Why it exists: the repeal of 50-a](#️-why-it-exists-the-repeal-of-50-a)
+5. [🧭 About the data](#-about-the-data)
+6. [🗂️ What's in each folder](#️-whats-in-each-folder)
+7. [🚀 How to use this repo](#-how-to-use-this-repo)
+8. [📊 Visualizing the data](#-visualizing-the-data)
+9. [🧪 Validating and profiling](#-validating-and-profiling)
+10. [📚 Data dictionary template](#-data-dictionary-template)
+11. [🪪 Identifying officers responsibly](#-identifying-officers-responsibly)
+12. [⚠️ Limitations and caveats](#️-limitations-and-caveats)
+13. [🧑‍⚖️ Responsible use](#️-responsible-use)
+14. [🔄 Keeping your copy up to date](#-keeping-your-copy-up-to-date)
+15. [📝 Citing this data](#-citing-this-data)
+16. [🤝 Support and contributions](#-support-and-contributions)
+17. [📜 License and terms](#-license-and-terms)
+18. [🔤 Glossary](#-glossary)
+19. [🙋 FAQ](#-faq)
+20. [🙏 Credits](#-credits)
 
 ---
 
 ## 👀 At a glance
 
-|                      |                                                                                         |
-| -------------------- | --------------------------------------------------------------------------------------- |
-| 🏛️ **Publisher**     | The Legal Aid Society of NYC                                                            |
-| 🎯 **Purpose**       | Support NYC LAS attorneys representing clients; shared with the public as a courtesy 🤲 |
-| 📁 **Format**        | One folder per LELU tab, each with `.tsv` data and `.yml` metadata                      |
-| 🔄 **Updates**       | Each time LELU is updated                                                               |
-| 📍 **Coverage**      | Law enforcement misconduct records in New York City                                     |
-| 🛠️ **Support level** | Limited (see [Support](#-support-and-contributions))                                    |
+|                         |                                                                                                              |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------ |
+| 🏛️ **Data from**        | The Legal Aid Society of NYC                                                                                 |
+| 🎯 **Original purpose** | Support NYC LAS attorneys representing clients; shared with the public as a courtesy 🤲                      |
+| 📁 **Format**           | One folder per LELU tab, each with `.tsv` data and `.yml` metadata                                           |
+| 🗃️ **Folders**          | `ccrb`, `co`, `da_judicial`, `lawsuits`, `media`, `nypd_internal`, `payroll`, `payroll_historical`, `roster` |
+| 🔄 **Updates**          | Upstream is updated each time LELU is updated                                                                |
+| 🛠️ **Support level**    | Limited (see [Support](#-support-and-contributions))                                                         |
 
 ```mermaid
 mindmap
   root((LELU data))
     🔎 Who uses it
-      Legal Aid attorneys
-      Public defenders and lawyers
+      Attorneys
       Journalists
       Researchers
+      Students
       Community members
     📦 What you get
       Raw TSV files
       YAML metadata
-      One folder per tab
+      9 data folders
     ⚠️ Handle with care
-      Verify identity of officers
-      Read each tab's About section
+      Verify officer identity
+      Read each source's About section
       Records are not findings
 ```
 
@@ -74,7 +78,7 @@ mindmap
 
 ## ❓ What is this?
 
-**Law Enforcement Lookup (LELU)** provides one-stop access to law enforcement misconduct data in New York City 🗽. It brings together many different kinds of misconduct records that were historically hidden, so they can be searched in one place.
+**Law Enforcement Lookup (LELU)** provides one-stop access to law enforcement misconduct data in New York City 🗽. It brings together many kinds of misconduct records that were historically hidden, so they can be searched in one place.
 
 This repository holds the **raw data behind LELU** 📦. Each folder corresponds to one tab of the LELU app and contains:
 
@@ -83,7 +87,21 @@ This repository holds the **raw data behind LELU** 📦. Each folder corresponds
 | `.tsv`       | The data itself, tab-separated, easy to load into Excel, R, Python, SQL, etc. |
 | `.yml`       | Metadata describing the corresponding dataset                                 |
 
-> 🎯 **Primary purpose:** this database exists to support NYC Legal Aid Society attorneys in representing their clients. It is shared with the public as a courtesy.
+> 🎯 **Primary purpose of the original database:** to support NYC Legal Aid Society attorneys in representing their clients. It is shared with the public as a courtesy.
+
+---
+
+## 🎁 Benefits
+
+| 🎁 Benefit                     | 💬 What it means for you                                                                       |
+| ------------------------------ | ---------------------------------------------------------------------------------------------- |
+| 📦 **Many sources, one place** | Complaint, court, lawsuit, media, internal, payroll and roster data side by side               |
+| 🧰 **Easy to use**             | Plain text files that open in Excel, Google Sheets, Python, R, SQL and DuckDB. No login or API |
+| 🔓 **Transparency**            | Records that were secret until 50-a was repealed in 2020                                       |
+| 🕰️ **Trackable history**       | Git history shows how the data changed between updates                                         |
+| 🆓 **Free to access**          | No paywall and no special software                                                             |
+| 🧪 **Great for projects**      | Research, journalism, courses, dashboards and civic-tech work                                  |
+| 🏷️ **Documented**              | Each dataset ships with `.yml` metadata                                                        |
 
 ---
 
@@ -99,121 +117,161 @@ timeline
     Before June 2020 : 🤐 Police secrecy law 50-a keeps misconduct records confidential
     12 June 2020 : 🎉 50-a is repealed
     After repeal : 📂 State and city agencies begin disclosing some misconduct records
-    Today : 🔍 LELU brings disclosed records together in one searchable place
+    Today : 🔍 LELU brings disclosed records together in one place
 ```
 
 ---
 
-## 🧭 About the data and where it comes from
+## 🧭 About the data
 
-This repository contains the data published through **The Legal Aid Society of NYC's Law Enforcement Lookup**. It is built from **publicly disclosed records** about law enforcement in New York City, compiled and organized by Legal Aid 🧑‍⚖️. A large share concerns the **NYPD** 👮, but LELU covers law enforcement misconduct data broadly, and different tabs draw on different sources.
+The data comes from **publicly disclosed records** about law enforcement in New York City, compiled and organized by The Legal Aid Society 🧑‍⚖️. A large share concerns the **NYPD** 👮, but different folders draw on different sources.
 
-> 📌 **Provenance matters.** Each LELU tab has an **About** section describing where its data came from and how it was obtained. Always read it before relying on or republishing a dataset. The underlying records originate with the agencies that disclosed them; Legal Aid compiles and shares them here.
+> 📌 **Provenance matters.** Each LELU tab has an **About** section on the [LELU site](https://legalaidnyc.org/law-enforcement-look-up/) describing where its data came from. Read it, along with the folder's `.yml` file, before relying on or republishing a dataset. The underlying records originate with the agencies that disclosed them.
 
 ```mermaid
 flowchart LR
     A["🏢 Agencies disclose records<br/>after 50-a repeal"] --> B["🧑‍⚖️ Legal Aid Society<br/>collects and organizes"]
     B --> C["🌐 LELU web app<br/>one tab per source"]
-    C --> D["📦 This repository<br/>TSV + YAML per tab"]
+    C --> D["📦 LELU repository<br/>TSV + YAML per tab"]
     D --> E["⚖️ Attorneys"]
     D --> F["📰 Researchers, journalists,<br/>and the public"]
 ```
 
 ---
 
-## 🗂️ Repository layout
+## 🗂️ What's in each folder
 
-Folders map one-to-one to LELU tabs 🗃️. Illustrative structure:
+Each folder matches a LELU tab. The descriptions below are based on the folder names; **always confirm in the folder's `.yml` files and the LELU About sections**.
+
+| 📁 Folder            | 🧾 Likely contents (from the name)                            |
+| -------------------- | ------------------------------------------------------------- |
+| `ccrb`               | Records related to the Civilian Complaint Review Board        |
+| `co`                 | See the folder's `.yml` and the LELU About section            |
+| `da_judicial`        | Records connected to district attorneys and judicial findings |
+| `lawsuits`           | Lawsuit-related records                                       |
+| `media`              | Media-related records                                         |
+| `nypd_internal`      | NYPD internal records                                         |
+| `payroll`            | Payroll records                                               |
+| `payroll_historical` | Historical payroll records                                    |
+| `roster`             | Personnel roster records                                      |
 
 ```text
 LELU/
 ├── 📄 README.md
-├── 📁 <tab-name-1>/
-│   ├── 📊 <dataset>.tsv      # raw data
-│   └── 🏷️ <dataset>.yml      # metadata
-├── 📁 <tab-name-2>/
-│   ├── 📊 <dataset>.tsv
-│   └── 🏷️ <dataset>.yml
-└── 📁 ...
+├── 📁 ccrb/
+├── 📁 co/
+├── 📁 da_judicial/
+├── 📁 lawsuits/
+├── 📁 media/
+├── 📁 nypd_internal/
+├── 📁 payroll/
+├── 📁 payroll_historical/
+└── 📁 roster/
+    └── each folder: 📊 *.tsv  +  🏷️ *.yml
 ```
 
 ```mermaid
 flowchart TD
-    R["📦 Repository root"] --> T1["📁 Tab folder A"]
-    R --> T2["📁 Tab folder B"]
-    R --> T3["📁 Tab folder ..."]
-    T1 --> T1a["📊 data.tsv"]
-    T1 --> T1b["🏷️ metadata.yml"]
-    T2 --> T2a["📊 data.tsv"]
-    T2 --> T2b["🏷️ metadata.yml"]
+    R["📦 LELU"] --> A["📁 ccrb"]
+    R --> B["📁 co"]
+    R --> C["📁 da_judicial"]
+    R --> D["📁 lawsuits"]
+    R --> E["📁 media"]
+    R --> F["📁 nypd_internal"]
+    R --> G["📁 payroll"]
+    R --> H["📁 payroll_historical"]
+    R --> I["📁 roster"]
 ```
 
 ---
 
-## 🚀 Quick start
+## 🚀 How to use this repo
 
-### 📥 Clone
+### 👀 1. Browse on GitHub
+
+Open a folder, then click a `.tsv` file to preview the rows. Click a `.yml` file to read its metadata.
+
+### 📥 2. Download
+
+**No Git:** click the green **Code** button → **Download ZIP**.
+
+**With Git:**
 
 ```bash
-git clone https://github.com/<org>/<repo>.git
-cd <repo>
+git clone https://github.com/PrajwalKoirala638/LELU.git
+cd LELU
 ```
 
-### 🐍 Python (pandas)
+### 📊 3. Open in a spreadsheet
+
+In Excel or Google Sheets, import the file as **tab-delimited** (Data → From Text/CSV, or File → Import).
+
+### 🐍 4. Python (pandas)
 
 ```python
 import pandas as pd
 
-df = pd.read_csv("<tab-folder>/<dataset>.tsv", sep="\t", dtype=str)
+df = pd.read_csv("ccrb/<dataset>.tsv", sep="\t", dtype=str)
 print(df.shape)
 print(df.columns.tolist())
 print(df.head())
 ```
 
-### 📈 R
+### 📈 5. R
 
 ```r
 library(readr)
 
-df <- read_tsv("<tab-folder>/<dataset>.tsv", col_types = cols(.default = "c"))
+df <- read_tsv("ccrb/<dataset>.tsv", col_types = cols(.default = "c"))
 glimpse(df)
 ```
 
-### 💻 Command line
+### 💻 6. Command line
 
 ```bash
+# list every data file
+find . -name "*.tsv"
+
 # row count (minus header)
-tail -n +2 <tab-folder>/<dataset>.tsv | wc -l
+tail -n +2 ccrb/<dataset>.tsv | wc -l
 
 # preview the columns
-head -n 1 <tab-folder>/<dataset>.tsv | tr '\t' '\n'
+head -n 1 ccrb/<dataset>.tsv | tr '\t' '\n'
 ```
 
-### 🦆 DuckDB (SQL on the raw files)
+### 🦆 7. DuckDB (SQL on the raw files)
 
 ```sql
 SELECT *
-FROM read_csv_auto('<tab-folder>/<dataset>.tsv', delim='\t', all_varchar=true)
+FROM read_csv_auto('ccrb/<dataset>.tsv', delim='\t', all_varchar=true)
 LIMIT 10;
 ```
 
-### 🏷️ Reading the YAML metadata
+### 🏷️ 8. Read the metadata
 
 ```python
 import yaml
 
-with open("<tab-folder>/<dataset>.yml") as f:
-    meta = yaml.safe_load(f)
-print(meta)
+with open("ccrb/<dataset>.yml") as f:
+    print(yaml.safe_load(f))
 ```
 
 > 💡 **Tip:** read identifier-like columns (IDs, tax IDs, shield numbers) **as text** so leading zeros are not dropped.
+
+```mermaid
+flowchart LR
+    A["👀 Browse"] --> B["📥 Download or clone"]
+    B --> C["🏷️ Read the .yml"]
+    C --> D["📊 Load the .tsv"]
+    D --> E["🔬 Analyze and chart"]
+    E --> F["✅ Verify before publishing"]
+```
 
 ---
 
 ## 📊 Visualizing the data
 
-📉 This repo does not ship pre-computed statistics, because counts change with every update. Instead, here are ready-to-run recipes that generate charts from the current files, so the numbers are always accurate ✅.
+📉 Counts change with every update, so this repo does not ship fixed statistics. These recipes generate charts from the current files, so the numbers are always accurate ✅. Replace the `<...>` placeholders with real names from the dataset you're using.
 
 ### 📅 Records per year
 
@@ -221,9 +279,8 @@ print(meta)
 import pandas as pd
 import matplotlib.pyplot as plt
 
-df = pd.read_csv("<tab-folder>/<dataset>.tsv", sep="\t", dtype=str)
+df = pd.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)
 
-# Replace with the date column in your dataset
 df["year"] = pd.to_datetime(df["<date-column>"], errors="coerce").dt.year
 counts = df["year"].value_counts().sort_index()
 
@@ -243,12 +300,12 @@ plt.tight_layout()
 plt.savefig("top_categories.png", dpi=150)
 ```
 
-### 🗺️ By precinct or borough (R)
+### 🗺️ By precinct (R)
 
 ```r
 library(dplyr); library(ggplot2); library(readr)
 
-df <- read_tsv("<tab-folder>/<dataset>.tsv", col_types = cols(.default = "c"))
+df <- read_tsv("<folder>/<dataset>.tsv", col_types = cols(.default = "c"))
 
 df |>
   count(`<precinct-column>`, sort = TRUE) |>
@@ -283,19 +340,19 @@ plt.tight_layout()
 plt.savefig("missing.png", dpi=150)
 ```
 
-### 💡 Suggested analyses
+### 💡 Ideas
 
-- 📈 Trends over time (records per year or month)
-- 🗺️ Geographic breakdowns (precinct, borough, command)
-- 🏷️ Allegation or outcome categories
+- 📈 Trends over time
+- 🗺️ Geographic breakdowns
+- 🏷️ Category or outcome comparisons
 - 🕳️ Where data is missing, and what that says about disclosure
-- 🔗 Cross-source comparison (with the caution in the identifier section below)
+- 🔗 Cross-folder comparison (see the caution on identifiers below)
 
 ---
 
-## 🧪 Validating and profiling the data
+## 🧪 Validating and profiling
 
-### 📋 Profile every file
+### 📋 Profile every folder at once
 
 ```python
 from pathlib import Path
@@ -304,32 +361,34 @@ import pandas as pd
 rows = []
 for f in Path(".").rglob("*.tsv"):
     df = pd.read_csv(f, sep="\t", dtype=str)
-    rows.append({"file": str(f), "rows": len(df), "columns": df.shape[1]})
+    rows.append({"folder": f.parts[0], "file": f.name,
+                 "rows": len(df), "columns": df.shape[1]})
 
-summary = pd.DataFrame(rows).sort_values("rows", ascending=False)
+summary = pd.DataFrame(rows).sort_values(["folder", "file"])
 print(summary.to_markdown(index=False))
 ```
 
-Paste the output into this table to keep a snapshot 📸:
+Paste the output below to keep a dated snapshot 📸:
 
-| 📄 File     | 🔢 Rows | 🧱 Columns | 📅 Snapshot date |
-| ----------- | ------: | ---------: | ---------------- |
-| _generated_ |     _n_ |        _n_ | _YYYY-MM-DD_     |
+| 📁 Folder   | 📄 File     | 🔢 Rows | 🧱 Columns | 📅 Snapshot date |
+| ----------- | ----------- | ------: | ---------: | ---------------- |
+| _generated_ | _generated_ |     _n_ |        _n_ | _YYYY-MM-DD_     |
 
-### ✅ Sanity checks to run after each update
+### ✅ Sanity checks after each update
 
 ```python
-import pandas as pd
 from pathlib import Path
+import pandas as pd
 
 for f in Path(".").rglob("*.tsv"):
     df = pd.read_csv(f, sep="\t", dtype=str)
     assert df.shape[1] > 1, f"{f}: only one column, check the delimiter"
-    dupes = df.duplicated().sum()
-    print(f"{f}: {len(df)} rows, {dupes} exact duplicate rows")
+    print(f"{f}: {len(df)} rows, {df.duplicated().sum()} exact duplicate rows")
 ```
 
-### 🤖 Optional: automate with GitHub Actions
+### 🤖 Optional: GitHub Actions summary
+
+Save the profiling script as `scripts/profile.py`, then add `.github/workflows/profile.yml`:
 
 ```yaml
 name: Profile data
@@ -351,7 +410,7 @@ jobs:
 
 ## 📚 Data dictionary template
 
-Copy this for each dataset 📝 and fill it in from the tab's About section and `.yml` file.
+Copy this for each dataset 📝 and fill it in from the `.yml` file and the LELU About section.
 
 | 🏷️ Column  | 🧾 Description  | 🔤 Type              | ❓ Can be blank? | 📝 Notes  |
 | ---------- | --------------- | -------------------- | ---------------- | --------- |
@@ -371,7 +430,7 @@ Copy this for each dataset 📝 and fill it in from the tab's About section and 
 
 🧑‍⚖️ LELU users are responsible for determining whether the results returned represent the officer in question.
 
-The misconduct sources in LELU vary in how much they identify each individual officer. For NYPD officers, **the only stable and unique identifier is the "Tax ID"** 🔑, and it is **not consistently available** from every source. These are **not** reliable identifiers:
+The misconduct sources vary in how much they identify each individual officer. For NYPD officers, **the only stable and unique identifier is the "Tax ID"** 🔑, and it is **not consistently available** from every source. These are **not** reliable identifiers:
 
 | 🏷️ Field                 | 🎯 Reliable?   | 💬 Why                                 |
 | ------------------------ | -------------- | -------------------------------------- |
@@ -380,7 +439,7 @@ The misconduct sources in LELU vary in how much they identify each individual of
 | 🏢 Precinct / command    | ⚠️ No          | Officers transfer                      |
 | 👤 Name                  | ⚠️ No          | Changes, duplicates, spelling variants |
 
-This is exactly why **LELU does not build a single "profile" page per officer** 🚫👤. Please do not merge records across sources by name or badge alone, and treat any match as a lead to verify, not a conclusion.
+This is why **LELU does not build a single "profile" page per officer** 🚫👤. Please do not merge records across folders by name or badge alone, and treat any match as a lead to verify, not a conclusion.
 
 ```mermaid
 flowchart TD
@@ -394,12 +453,12 @@ flowchart TD
 
 ## ⚠️ Limitations and caveats
 
-- 🧾 **Records are not findings.** A record's presence does not by itself establish what happened. Check the About section for what each source represents.
-- 🧩 **Coverage is uneven.** Agencies disclosed records at different times and in different formats, so sources are not directly comparable.
+- 🧾 **Records are not findings.** A record's presence does not by itself establish what happened.
+- 🧩 **Coverage is uneven.** Agencies disclosed records at different times and in different formats.
 - 🚫 **No unified officer identity.** See the identifier section above.
 - 🕳️ **Data reflects disclosure, not reality.** Missing records may simply mean nothing was disclosed.
-- 🛑 **Do not use for adverse decisions about an individual** without independent verification.
-- ⏳ **Snapshots age.** Always check the update date before citing figures.
+- 🛑 **No adverse decisions about an individual** without independent verification.
+- ⏳ **Forks and snapshots age.** Check the upstream repo and the LELU page for the latest data.
 
 ---
 
@@ -407,7 +466,7 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    A["📥 Download data"] --> B["📖 Read the tab's<br/>About section"]
+    A["📥 Download data"] --> B["📖 Read the source's<br/>About section"]
     B --> C["🧹 Clean and analyze"]
     C --> D["✅ Verify any individual match"]
     D --> E["📣 Publish with context<br/>and a data date"]
@@ -419,9 +478,17 @@ flowchart LR
 
 ---
 
-## 🔄 Update cadence
+## 🔄 Keeping your copy up to date
 
-🔁 This repository is updated each time LELU is updated. The LELU page lists its own "last updated" date, so check it to see how current the data is 📅.
+This fork does not update itself. To pull the latest data from Legal Aid's repository:
+
+```bash
+git remote add upstream https://github.com/the-legal-aid-society/LELU.git
+git fetch upstream
+git merge upstream/main
+```
+
+Or use the **Sync fork** button on the GitHub page of your fork 🔄. The LELU site shows its own "last updated" date 📅.
 
 ---
 
@@ -442,20 +509,21 @@ flowchart LR
 
 ## 🤝 Support and contributions
 
-🏗️ LAS does not have the organizational capacity to support full-stack application development. As a result, we are limited in our ability to:
+🏗️ The Legal Aid Society does not have the organizational capacity to support full-stack application development, so it is limited in its ability to provide documentation or updates, make improvements, or collaborate with outside parties.
 
-- 📚 provide documentation,
-- 🔧 issue updates or fixes on request,
-- ✨ make improvements, or
-- 🤝 collaborate with outside parties.
-
-You are welcome to **use, analyze, and build on the data** 🎉. Please understand that issues and pull requests may not receive a response 🙏.
+- 📚 For questions about the **data**, see the LELU site and the upstream repository.
+- 🛠️ For questions about this fork's **documentation and example code**, open an issue here.
+- 🙏 Please understand that issues and pull requests may not receive a response.
 
 ---
 
 ## 📜 License and terms
 
-The data is shared publicly by The Legal Aid Society of NYC as a courtesy 🤲. This repository does not state a specific software or data license, so please review the [Legal Aid Society's terms of use](https://legalaidnyc.org/terms-of-use/) and [disclaimer](https://legalaidnyc.org/disclaimer/) before reusing or redistributing the data.
+⚖️ **Please read this before reusing anything.**
+
+- 📂 **The data** was compiled and published by The Legal Aid Society of NYC. At the time of writing, this fork does not include a `LICENSE` file, and the original project does not state a data license in its README. Review the Legal Aid Society's [terms of use](https://legalaidnyc.org/terms-of-use/) and [disclaimer](https://legalaidnyc.org/disclaimer/), or contact them, before redistributing or building products on the data.
+- 🧑‍💻 **Original code and documentation added in this fork** (scripts, chart recipes, README text) may be licensed by their author. If you want these under MIT, add a `LICENSE` file that explicitly covers only that original material.
+- 🚫 A fork owner cannot grant rights to data they did not create.
 
 ---
 
@@ -468,6 +536,7 @@ The data is shared publicly by The Legal Aid Society of NYC as a courtesy 🤲. 
 | **Tax ID**        | The only stable, unique identifier for NYPD officers, though not available in every source |
 | **TSV**           | Tab-separated values, a plain-text table format                                            |
 | **YAML (`.yml`)** | A human-readable format used here for dataset metadata                                     |
+| **Fork**          | A personal copy of a GitHub repository                                                     |
 | **LAS**           | The Legal Aid Society                                                                      |
 
 ---
@@ -475,7 +544,7 @@ The data is shared publicly by The Legal Aid Society of NYC as a courtesy 🤲. 
 ## 🙋 FAQ
 
 **🧐 Is this all NYPD data?**
-Much of it concerns the NYPD 👮, but LELU covers law enforcement misconduct data more broadly, drawn from several public disclosures. Each tab's About section states its origin.
+Much of it concerns the NYPD 👮, but sources vary by folder. Check each folder's `.yml` and the LELU About sections.
 
 **🔎 Can I search officers by name here?**
 Use the [LELU app](https://legaidsoc.shinyapps.io/cap_search/) 🌐 for searching. This repository is for raw files.
@@ -484,9 +553,9 @@ Use the [LELU app](https://legaidsoc.shinyapps.io/cap_search/) 🌐 for searchin
 Tabs rarely appear inside text fields, which makes parsing more robust than commas.
 
 **⏱️ How do I know the data is current?**
-Check the "last updated" date on the LELU page and the commit history of this repository 🕰️.
+Compare this fork's commits with the upstream repo, and check the "last updated" date on the LELU page 🕰️.
 
-**🔗 Can I link records across tabs?**
+**🔗 Can I link records across folders?**
 Only with great care. See the identifier section.
 
 **🆘 I need legal help. Can you help?**
@@ -496,10 +565,11 @@ This repo can't give legal advice. Legal Aid's help line is **212-577-3300** �
 
 ## 🙏 Credits
 
-💙 Compiled and maintained by **The Legal Aid Society**, New York City.
+💙 Data compiled and published by **The Legal Aid Society**, New York City.
 
 - 🌐 Website: <https://legalaidnyc.org>
 - 🔍 LELU: <https://legalaidnyc.org/law-enforcement-look-up/>
+- 🍴 Upstream repo: <https://github.com/the-legal-aid-society/LELU>
 - 📞 Free legal help: call **212-577-3300**
 
 <div align="center">

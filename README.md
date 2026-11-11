@@ -517,13 +517,21 @@ Or use the **Sync fork** button on the GitHub page of your fork 🔄. The LELU s
 
 ---
 
-## 📜 License and terms
+## 📜 License and Terms
 
-⚖️ **Please read this before reusing anything.**
+⚖️ **MIT License**
 
-- 📂 **The data** was compiled and published by The Legal Aid Society of NYC. At the time of writing, this fork does not include a `LICENSE` file, and the original project does not state a data license in its README. Review the Legal Aid Society's [terms of use](https://legalaidnyc.org/terms-of-use/) and [disclaimer](https://legalaidnyc.org/disclaimer/), or contact them, before redistributing or building products on the data.
-- 🧑‍💻 **Original code and documentation added in this fork** (scripts, chart recipes, README text) may be licensed by their author. If you want these under MIT, add a `LICENSE` file that explicitly covers only that original material.
-- 🚫 A fork owner cannot grant rights to data they did not create.
+This project is released under the **MIT License**, one of the most permissive open-source licenses.
+
+- 📂 **Data:** The data was originally compiled and published by The Legal Aid Society of NYC. The MIT License applies only to original materials owned by this project's author. It does not automatically grant rights to third-party data. Please review the Legal Aid Society's [Terms of Use](https://legalaidnyc.org/terms-of-use/) and [Disclaimer](https://legalaidnyc.org/disclaimer/) before redistributing, modifying, or using the data commercially.
+
+- 🧑‍💻 **Original code and documentation:** All original code, scripts, chart configurations, documentation, and README content created for this repository are licensed under the MIT License.
+
+- 🚫 **Third-party content:** Data, materials, trademarks, and other content owned by third parties remain subject to their respective licenses, terms, and restrictions. The repository author does not claim ownership of or grant additional rights to such materials.
+
+- 🤝 **Contributions:** Contributions to original project materials are subject to the MIT License unless otherwise specified.
+
+See the [LICENSE](LICENSE) file for the complete license text.
 
 ---
 

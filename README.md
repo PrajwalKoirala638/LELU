@@ -198,8 +198,8 @@ Open a folder, then click a `.tsv` file to preview the rows. Click a `.yml` file
 **With Git:**
 
 ```bash
-git clone https://github.com/PrajwalKoirala638/LELU.git
-cd LELU
+git clone https://github.com/PrajwalKoirala638/LELU.git  # download a full copy of this repository
+cd LELU  # move into the downloaded repository folder
 ```
 
 ### 📊 3. Open in a spreadsheet
@@ -209,54 +209,73 @@ In Excel or Google Sheets, import the file as **tab-delimited** (Data → From T
 ### 🐍 4. Python (pandas)
 
 ```python
-import pandas as pd
+import pandas  # load the pandas library for working with tables
 
-df = pd.read_csv("ccrb/<dataset>.tsv", sep="\t", dtype=str)
-print(df.shape)
-print(df.columns.tolist())
-print(df.head())
+tsv_file_path = "ccrb/<dataset>.tsv"  # path to the data file (replace <dataset> with a real file name)
+
+dataframe = pandas.read_csv(tsv_file_path, sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
+print(dataframe.shape)  # print the number of rows and columns
+print(dataframe.columns.tolist())  # print the list of column names
+print(dataframe.head())  # print the first five rows as a preview
 ```
 
 ### 📈 5. R
 
 ```r
-library(readr)
+library(readr)  # load the readr library for reading delimited files
+library(dplyr)  # load the dplyr library, which provides the glimpse() function
 
-df <- read_tsv("ccrb/<dataset>.tsv", col_types = cols(.default = "c"))
-glimpse(df)
+tsv_file_path <- "ccrb/<dataset>.tsv"  # path to the data file (replace <dataset> with a real file name)
+
+dataframe <- read_tsv(tsv_file_path, col_types = cols(.default = "c"))  # read the tab-separated file, keeping every column as text
+glimpse(dataframe)  # print a compact summary of the columns and first values
 ```
 
 ### 💻 6. Command line
 
 ```bash
-# list every data file
-find . -name "*.tsv"
+find . -name "*.tsv"  # list every data file in this repository
 
-# row count (minus header)
-tail -n +2 ccrb/<dataset>.tsv | wc -l
+tail -n +2 ccrb/<dataset>.tsv | wc -l  # count the data rows by skipping the header line and counting the rest
 
-# preview the columns
-head -n 1 ccrb/<dataset>.tsv | tr '\t' '\n'
+head -n 1 ccrb/<dataset>.tsv | tr '\t' '\n'  # print the header line with one column name per line
 ```
 
 ### 🦆 7. DuckDB (SQL on the raw files)
 
 ```sql
-SELECT *
-FROM read_csv_auto('ccrb/<dataset>.tsv', delim='\t', all_varchar=true)
-LIMIT 10;
+SELECT *  -- select every column
+FROM read_csv_auto('ccrb/<dataset>.tsv', delim='\t', all_varchar=true)  -- read the tab-separated file with every column as text
+LIMIT 10;  -- return only the first ten rows
 ```
 
 ### 🏷️ 8. Read the metadata
 
 ```python
-import yaml
+import yaml  # load the PyYAML library for reading .yml files
 
-with open("ccrb/<dataset>.yml") as f:
-    print(yaml.safe_load(f))
+metadata_file_path = "ccrb/<dataset>.yml"  # path to the metadata file (replace <dataset> with a real file name)
+
+with open(metadata_file_path, encoding="utf-8") as metadata_file:  # open the metadata file as UTF-8 text
+    print(yaml.safe_load(metadata_file))  # parse the YAML safely and print the resulting dictionary
 ```
 
 > 💡 **Tip:** read identifier-like columns (IDs, tax IDs, shield numbers) **as text** so leading zeros are not dropped.
+
+### ▶️ 9. Running the code examples
+
+1. **Get the files** (see step 2) and open a terminal in the `LELU` folder, because every path in the examples is relative to it.
+2. **Replace the placeholders.** Anything in angle brackets, such as `<dataset>`, `<folder>`, `<date-column>`, `<category-column>` and `<precinct-column>`, must be replaced with a real name. Run the "preview the columns" command in step 6 to see the real column names.
+3. **Install what each language needs:**
+   - 🐍 Python: `pip install pandas matplotlib seaborn pyyaml tabulate`
+   - 📈 R: `install.packages(c("readr", "dplyr", "ggplot2"))`
+   - 🦆 DuckDB: install from <https://duckdb.org>, then run `duckdb` in the `LELU` folder
+4. **Run it:**
+   - 🐍 Save a Python block as a file such as `example.py`, then run `python example.py`. Or paste it into a Jupyter notebook cell.
+   - 📈 Paste the R block into R or RStudio, or save it as `example.R` and run `Rscript example.R`.
+   - 💻 Paste each command-line line into your terminal (macOS, Linux, or Git Bash on Windows).
+   - 🦆 Paste the SQL into the DuckDB prompt.
+5. **Find your charts.** The chart examples save image files (such as `records_per_year.png`) in the folder you ran them from.
 
 ```mermaid
 flowchart LR
@@ -276,68 +295,86 @@ flowchart LR
 ### 📅 Records per year
 
 ```python
-import pandas as pd
-import matplotlib.pyplot as plt
+import pandas  # load the pandas library for working with tables
+import matplotlib.pyplot  # load the matplotlib plotting library
 
-df = pd.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)
+dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
 
-df["year"] = pd.to_datetime(df["<date-column>"], errors="coerce").dt.year
-counts = df["year"].value_counts().sort_index()
+dataframe["year"] = pandas.to_datetime(dataframe["<date-column>"], errors="coerce").dt.year  # convert the date column to dates and keep only the year (bad dates become blank)
+records_per_year_counts = dataframe["year"].value_counts().sort_index()  # count the records in each year and sort the years in order
 
-counts.plot(kind="bar", figsize=(10, 4), title="Records per year")
-plt.xlabel("Year")
-plt.ylabel("Records")
-plt.tight_layout()
-plt.savefig("records_per_year.png", dpi=150)
+records_per_year_counts.plot(kind="bar", figsize=(10, 4), title="Records per year")  # draw a bar chart of records per year
+matplotlib.pyplot.xlabel("Year")  # label the horizontal axis
+matplotlib.pyplot.ylabel("Records")  # label the vertical axis
+matplotlib.pyplot.tight_layout()  # adjust spacing so labels are not cut off
+matplotlib.pyplot.savefig("records_per_year.png", dpi=150)  # save the chart as an image file
 ```
 
 ### 🏷️ Top categories
 
 ```python
-top = df["<category-column>"].value_counts().head(15)
-top.sort_values().plot(kind="barh", figsize=(8, 6), title="Most common categories")
-plt.tight_layout()
-plt.savefig("top_categories.png", dpi=150)
+import pandas  # load the pandas library for working with tables
+import matplotlib.pyplot  # load the matplotlib plotting library
+
+dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
+
+top_category_counts = dataframe["<category-column>"].value_counts().head(15)  # count each category and keep the 15 most common
+top_category_counts.sort_values().plot(kind="barh", figsize=(8, 6), title="Most common categories")  # draw a horizontal bar chart with the largest bar at the top
+matplotlib.pyplot.tight_layout()  # adjust spacing so labels are not cut off
+matplotlib.pyplot.savefig("top_categories.png", dpi=150)  # save the chart as an image file
 ```
 
 ### 🗺️ By precinct (R)
 
 ```r
-library(dplyr); library(ggplot2); library(readr)
+library(dplyr)  # load dplyr for counting and filtering rows
+library(ggplot2)  # load ggplot2 for drawing charts
+library(readr)  # load readr for reading delimited files
 
-df <- read_tsv("<folder>/<dataset>.tsv", col_types = cols(.default = "c"))
+dataframe <- read_tsv("<folder>/<dataset>.tsv", col_types = cols(.default = "c"))  # read the tab-separated file, keeping every column as text
 
-df |>
-  count(`<precinct-column>`, sort = TRUE) |>
-  slice_head(n = 20) |>
-  ggplot(aes(reorder(`<precinct-column>`, n), n)) +
-  geom_col() +
-  coord_flip() +
-  labs(x = NULL, y = "Records", title = "Records by precinct (top 20)")
+dataframe |>  # start with the data and pipe it into the next step
+  count(`<precinct-column>`, sort = TRUE) |>  # count records per precinct, largest first
+  slice_head(n = 20) |>  # keep only the top 20 precincts
+  ggplot(aes(reorder(`<precinct-column>`, n), n)) +  # set up the chart with precincts ordered by their counts
+  geom_col() +  # draw one bar per precinct
+  coord_flip() +  # turn the bars sideways so names are easy to read
+  labs(x = NULL, y = "Records", title = "Records by precinct (top 20)")  # set the axis labels and chart title
 ```
 
 ### 🔥 Month-by-year heatmap
 
 ```python
-import seaborn as sns
+import pandas  # load the pandas library for working with tables
+import matplotlib.pyplot  # load the matplotlib plotting library
+import seaborn  # load the seaborn library for drawing heatmaps
 
-d = pd.to_datetime(df["<date-column>"], errors="coerce").dropna()
-pivot = (
-    pd.DataFrame({"year": d.dt.year, "month": d.dt.month})
-    .value_counts().unstack(fill_value=0).sort_index()
-)
-sns.heatmap(pivot, cmap="YlOrRd")
-plt.title("Records by year and month")
-plt.savefig("heatmap.png", dpi=150)
+dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
+
+parsed_dates = pandas.to_datetime(dataframe["<date-column>"], errors="coerce").dropna()  # convert the date column to dates and drop rows with missing or bad dates
+year_by_month_counts = (  # start building a table of counts with years as rows and months as columns
+    pandas.DataFrame({"year": parsed_dates.dt.year, "month": parsed_dates.dt.month})  # make a small table holding each date's year and month
+    .value_counts()  # count how many records fall in each year and month pair
+    .unstack(fill_value=0)  # turn months into columns and fill empty cells with zero
+    .sort_index()  # sort the rows by year
+)  # finish building the table
+seaborn.heatmap(year_by_month_counts, cmap="YlOrRd")  # draw the heatmap using a yellow-orange-red color scale
+matplotlib.pyplot.title("Records by year and month")  # add a title to the chart
+matplotlib.pyplot.savefig("heatmap.png", dpi=150)  # save the chart as an image file
 ```
 
 ### 🧩 Missing-data chart
 
 ```python
-missing = df.isna().mean().sort_values(ascending=False).head(20) * 100
-missing.plot(kind="barh", figsize=(8, 6), title="% missing by column")
-plt.tight_layout()
-plt.savefig("missing.png", dpi=150)
+import pandas  # load the pandas library for working with tables
+import matplotlib.pyplot  # load the matplotlib plotting library
+
+dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
+
+missing_percentage_by_column = dataframe.isna().mean().sort_values(ascending=False).head(20) * 100  # find the share of blank cells per column as a percentage and keep the 20 highest
+missing_percentage_by_column.plot(kind="barh", figsize=(8, 6), title="% missing by column")  # draw a horizontal bar chart of missing percentages
+matplotlib.pyplot.tight_layout()  # adjust spacing so labels are not cut off
+matplotlib.pyplot.savefig("missing.png", dpi=150)  # save the chart as an image file
 ```
 
 ### 💡 Ideas
@@ -355,17 +392,21 @@ plt.savefig("missing.png", dpi=150)
 ### 📋 Profile every folder at once
 
 ```python
-from pathlib import Path
-import pandas as pd
+from pathlib import Path  # load Path for finding files on disk
+import pandas  # load the pandas library for working with tables
 
-rows = []
-for f in Path(".").rglob("*.tsv"):
-    df = pd.read_csv(f, sep="\t", dtype=str)
-    rows.append({"folder": f.parts[0], "file": f.name,
-                 "rows": len(df), "columns": df.shape[1]})
+profile_rows = []  # start an empty list that will hold one summary per file
+for tsv_file_path in Path(".").rglob("*.tsv"):  # loop over every .tsv file in this folder and all subfolders
+    dataframe = pandas.read_csv(tsv_file_path, sep="\t", dtype=str)  # read the file, keeping every column as text
+    profile_rows.append({  # add one summary entry for this file
+        "folder": tsv_file_path.parts[0],  # record the top-level folder the file lives in
+        "file": tsv_file_path.name,  # record the file name
+        "rows": len(dataframe),  # record how many rows the file has
+        "columns": dataframe.shape[1],  # record how many columns the file has
+    })  # finish the summary entry
 
-summary = pd.DataFrame(rows).sort_values(["folder", "file"])
-print(summary.to_markdown(index=False))
+summary_table = pandas.DataFrame(profile_rows).sort_values(["folder", "file"])  # combine all entries into a table sorted by folder, then file
+print(summary_table.to_markdown(index=False))  # print the table in Markdown format (needs the tabulate package)
 ```
 
 Paste the output below to keep a dated snapshot 📸:
@@ -377,13 +418,13 @@ Paste the output below to keep a dated snapshot 📸:
 ### ✅ Sanity checks after each update
 
 ```python
-from pathlib import Path
-import pandas as pd
+from pathlib import Path  # load Path for finding files on disk
+import pandas  # load the pandas library for working with tables
 
-for f in Path(".").rglob("*.tsv"):
-    df = pd.read_csv(f, sep="\t", dtype=str)
-    assert df.shape[1] > 1, f"{f}: only one column, check the delimiter"
-    print(f"{f}: {len(df)} rows, {df.duplicated().sum()} exact duplicate rows")
+for tsv_file_path in Path(".").rglob("*.tsv"):  # loop over every .tsv file in this folder and all subfolders
+    dataframe = pandas.read_csv(tsv_file_path, sep="\t", dtype=str)  # read the file, keeping every column as text
+    assert dataframe.shape[1] > 1, f"{tsv_file_path}: only one column, check the delimiter"  # stop with a message if the file parsed into a single column
+    print(f"{tsv_file_path}: {len(dataframe)} rows, {dataframe.duplicated().sum()} exact duplicate rows")  # print the row count and the number of fully duplicated rows
 ```
 
 ### 🤖 Optional: GitHub Actions summary
@@ -391,19 +432,19 @@ for f in Path(".").rglob("*.tsv"):
 Save the profiling script as `scripts/profile.py`, then add `.github/workflows/profile.yml`:
 
 ```yaml
-name: Profile data
-on:
-  push:
-    paths: ["**/*.tsv"]
-jobs:
-  profile:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with: { python-version: "3.12" }
-      - run: pip install pandas tabulate
-      - run: python scripts/profile.py >> $GITHUB_STEP_SUMMARY
+name: Profile data  # the name shown for this workflow in the GitHub Actions tab
+on:  # define when the workflow runs
+  push:  # run whenever commits are pushed
+    paths: ["**/*.tsv"]  # only run when a .tsv file was changed
+jobs:  # list the jobs in this workflow
+  profile:  # a job named "profile"
+    runs-on: ubuntu-latest  # run the job on the newest Ubuntu machine GitHub offers
+    steps:  # list the steps of the job in order
+      - uses: actions/checkout@v4  # download this repository's files onto the machine
+      - uses: actions/setup-python@v5  # install Python on the machine
+        with: { python-version: "3.12" }  # choose Python version 3.12
+      - run: pip install pandas tabulate  # install the libraries the profiling script needs
+      - run: python scripts/profile.py >> $GITHUB_STEP_SUMMARY  # run the script and add its output to the workflow run summary
 ```
 
 ---
@@ -483,9 +524,9 @@ flowchart LR
 This fork does not update itself. To pull the latest data from Legal Aid's repository:
 
 ```bash
-git remote add upstream https://github.com/the-legal-aid-society/LELU.git
-git fetch upstream
-git merge upstream/main
+git remote add upstream https://github.com/the-legal-aid-society/LELU.git  # register Legal Aid's original repository under the name "upstream"
+git fetch upstream  # download the latest changes from upstream without applying them yet
+git merge upstream/main  # merge the downloaded upstream changes into your current branch
 ```
 
 Or use the **Sync fork** button on the GitHub page of your fork 🔄. The LELU site shows its own "last updated" date 📅.

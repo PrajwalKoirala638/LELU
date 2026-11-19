@@ -17,6 +17,8 @@
 
 > 🍴 **This is a fork.** The original, authoritative repository is [`the-legal-aid-society/LELU`](https://github.com/the-legal-aid-society/LELU), maintained by The Legal Aid Society. This fork adds documentation and example code. For the most current data, sync from or use the upstream repository.
 
+> 🤖 **Audience notice:** This repository is made for AI tools, not for humans. Only the [Live LELU app](https://legaidsoc.shinyapps.io/cap_search/) is made for humans.
+
 ---
 
 ## 📖 Table of Contents

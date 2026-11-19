@@ -290,8 +290,6 @@ flowchart LR
 
 ---
 
----
-
 ## 🤖 Using this data with LLMs (Local & Open Models)
 
 Because LELU consists of plain-text `.tsv` tables and `.yml` metadata, it works well with **open-weight, local LLMs** (via **Ollama**, **LM Studio**, **vLLM**, or **llama.cpp**) so you can analyze sensitive legal or investigative queries completely offline on your own machine 🔒.

@@ -135,6 +135,48 @@ class PeekableRowStream:  # Wraps a row generator so upcoming rows can be inspec
 # ----------------------------------------------------------------------
 # Finding files and naming outputs
 # ----------------------------------------------------------------------
+def is_generated_file_name(
+    file_name,
+):  # True for files this script produced on an earlier run
+    return file_name.endswith(
+        INPUT_FILE_EXTENSION
+    ) and file_name.endswith(  # A .tsv ending in a suffix
+        (FIXED_FILE_SUFFIX, REJECTED_FILE_SUFFIX)  # Either of our two output suffixes
+    )  # End of check
+
+
+def find_generated_file_paths(
+    root_directory_path,
+):  # Yields every old _fixed / _rejects file
+    for current_directory_path, directory_names, file_names in os.walk(
+        root_directory_path
+    ):  # Walk
+        directory_names.sort()  # Visit folders in a stable order
+        for file_name in sorted(file_names):  # Visit files in a stable order
+            if is_generated_file_name(file_name):  # One of ours
+                yield os.path.join(
+                    current_directory_path, file_name
+                )  # Hand back the full path
+
+
+def delete_all_generated_files(
+    root_directory_path,
+):  # Removes every old output before anything else
+    generated_file_paths = list(
+        find_generated_file_paths(root_directory_path)
+    )  # Collect them all
+    logger.info(
+        "Found %s old generated files to delete", len(generated_file_paths)
+    )  # Announce
+    for generated_file_path in generated_file_paths:  # Remove each one
+        os.remove(generated_file_path)  # Delete it
+        logger.info(
+            "Deleted old generated file %s",
+            os.path.relpath(generated_file_path, root_directory_path),
+        )
+    return len(generated_file_paths)  # Report how many were removed
+
+
 def find_tsv_file_paths(
     root_directory_path,
 ):  # Yields every original .tsv file under a folder
@@ -144,14 +186,12 @@ def find_tsv_file_paths(
         logger.debug(
             "Scanning folder %s", current_directory_path
         )  # Log each folder visited
-        directory_names.sort()  # Visit sub-folders in a stable order
+        directory_names.sort()  # Visit folders in a stable order
         for file_name in sorted(file_names):  # Visit files in a stable order
             is_tsv_file = file_name.endswith(
                 INPUT_FILE_EXTENSION
             )  # Must be a .tsv file
-            is_generated_file = file_name.endswith(
-                (FIXED_FILE_SUFFIX, REJECTED_FILE_SUFFIX)
-            )  # Ours
+            is_generated_file = is_generated_file_name(file_name)  # Ours
             if is_tsv_file and is_generated_file:  # A file this script produced earlier
                 logger.debug(
                     "Skipping generated file %s", file_name
@@ -620,6 +660,9 @@ def main():  # Runs the workflow over every .tsv file
     file_summaries = []  # Results for files that succeeded
     failed_files = []  # (path, message) for files that failed
     try:  # Guard the workflow so the closing message always prints
+        delete_all_generated_files(
+            ROOT_DIRECTORY_PATH
+        )  # Step one: remove every old output
         input_file_paths = list(
             find_tsv_file_paths(ROOT_DIRECTORY_PATH)
         )  # Collect every file

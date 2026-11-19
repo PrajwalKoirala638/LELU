@@ -30,7 +30,7 @@
 5. [🧭 About the data](#-about-the-data)
 6. [🗂️ What's in each folder](#️-whats-in-each-folder)
 7. [🚀 How to use this repo](#-how-to-use-this-repo)
-8. [📊 Visualizing the data](#-visualizing-the-data)
+8. [🤖 Using this data with LLMs (Local & Open Models)](#-using-this-data-with-llms-local--open-models)
 9. [🧪 Validating and profiling](#-validating-and-profiling)
 10. [📚 Data dictionary template](#-data-dictionary-template)
 11. [🪪 Identifying officers responsibly](#-identifying-officers-responsibly)
@@ -290,102 +290,141 @@ flowchart LR
 
 ---
 
-## 📊 Visualizing the data
+---
 
-📉 Counts change with every update, so this repo does not ship fixed statistics. These recipes generate charts from the current files, so the numbers are always accurate ✅. Replace the `<...>` placeholders with real names from the dataset you're using.
+## 🤖 Using this data with LLMs (Local & Open Models)
 
-### 📅 Records per year
+Because LELU consists of plain-text `.tsv` tables and `.yml` metadata, it works well with **open-weight, local LLMs** (via **Ollama**, **LM Studio**, **vLLM**, or **llama.cpp**) so you can analyze sensitive legal or investigative queries completely offline on your own machine 🔒.
+
+> ⚠️ **Never paste an entire `.tsv` file directly into an LLM prompt.** These files contain thousands of rows that will exceed context windows, waste tokens, and cause the model to hallucinate numbers. Instead, let the LLM write **SQL or Python queries** against the files, or feed it **filtered rows + `.yml` schemas**.
+
+```mermaid
+flowchart LR
+    A["🏷️ .yml metadata<br/>(Schema & rules)"] --> B["🧠 Open LLM<br/>(Ollama / LM Studio)"]
+    C["📊 .tsv data<br/>(via DuckDB / Python)"] --> B
+    B --> D["🔍 Structured queries,<br/>summaries & leads"]
+    D --> E["✅ Human verification<br/>(Tax ID & source check)"]
+```
+
+### 🏗️ Three patterns for LLM workflows
+
+| 🧩 Pattern                           | 🎯 Best for                                               | ⚙️ How it works                                                                                                                                   |
+| :----------------------------------- | :-------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **1. Text-to-SQL / Code Generation** | Counting, filtering, and cross-tabulating accurately      | Give the LLM only the `.yml` schema and column headers; ask it to generate DuckDB SQL or `pandas` code you execute locally.                       |
+| **2. Local RAG / Filtered Context**  | Summarizing narrative descriptions or media/lawsuit notes | Filter rows in Python/DuckDB first (e.g., by Tax ID or precinct), then pass only the matching rows to a local model.                              |
+| **3. AI Coding Assistants**          | Exploring the repo interactively                          | Open this folder in tools like **Continue.dev**, **Aider**, or **Claude Code** pointed at a local model (`qwen2.5-coder`, `llama3.1`, `mistral`). |
+
+---
+
+### 🦙 Example 1: Querying LELU with a local LLM (Ollama + Python)
+
+This script reads the `.yml` metadata and column headers (without loading thousands of data rows into memory) and asks a local **Ollama** model (such as `llama3.1` or `qwen2.5-coder`) to write a DuckDB SQL query for your question.
+
+#### Prerequisites
+
+```bash
+# 1. Install Ollama from [https://ollama.com](https://ollama.com) and pull an open model
+ollama pull qwen2.5-coder:7b
+
+# 2. Install the Python libraries needed to talk to Ollama and run SQL on TSVs
+pip install ollama duckdb pyyaml
+```
+
+#### Run a natural-language question locally
 
 ```python
-import pandas  # load the pandas library for working with tables
-import matplotlib.pyplot  # load the matplotlib plotting library
+import duckdb  # load DuckDB to run fast SQL queries directly on .tsv files
+import ollama  # load the Ollama client to talk to your local open-weight LLM
 
-dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
+tsv_file_path = "ccrb/<dataset>.tsv"  # path to the data file (replace <dataset> with a real file name)
+yml_file_path = "ccrb/<dataset>.yml"  # path to the matching metadata file
 
-dataframe["year"] = pandas.to_datetime(dataframe["<date-column>"], errors="coerce").dt.year  # convert the date column to dates and keep only the year (bad dates become blank)
-records_per_year_counts = dataframe["year"].value_counts().sort_index()  # count the records in each year and sort the years in order
+with open(yml_file_path, encoding="utf-8") as metadata_file:  # open the YAML metadata file
+    schema_metadata = metadata_file.read()  # read the metadata text so the LLM understands the columns
 
-records_per_year_counts.plot(kind="bar", figsize=(10, 4), title="Records per year")  # draw a bar chart of records per year
-matplotlib.pyplot.xlabel("Year")  # label the horizontal axis
-matplotlib.pyplot.ylabel("Records")  # label the vertical axis
-matplotlib.pyplot.tight_layout()  # adjust spacing so labels are not cut off
-matplotlib.pyplot.savefig("records_per_year.png", dpi=150)  # save the chart as an image file
+# Read only the header row (0 data rows) to get exact column names
+column_names = duckdb.sql(
+    f"SELECT * FROM read_csv_auto('{tsv_file_path}', delim='\t', all_varchar=true) LIMIT 0"
+).columns
+
+user_question = "Show the top 10 most frequent allegation categories and their counts."
+
+prompt = f"""
+You are a data analyst working with NYC Law Enforcement Lookup (LELU) data.
+Write a single DuckDB SQL query to answer the user's question.
+
+Rules:
+- Read the file using: read_csv_auto('{tsv_file_path}', delim='\\t', all_varchar=true)
+- Treat all IDs (Tax ID, shield number) as VARCHAR so leading zeros are preserved.
+- Do not assume two rows belong to the same officer unless Tax ID matches.
+- Return ONLY the SQL query, no markdown fences or explanation.
+
+Columns: {column_names}
+Metadata:
+{schema_metadata}
+
+Question: {user_question}
+"""
+
+response = ollama.chat(  # send the schema and question to your local open LLM
+    model="qwen2.5-coder:7b",  # swap with any local model (e.g., llama3.1, mistral, gemma2)
+    messages=[{"role": "user", "content": prompt}],
+)
+
+generated_sql = response["message"]["content"].strip()  # extract the SQL written by the LLM
+print("Generated SQL:\n", generated_sql)  # inspect the query before trusting its output
+
+result_table = duckdb.sql(generated_sql).df()  # run the SQL directly against the .tsv file
+print("\nResult:\n", result_table)  # print the exact computed answer
 ```
 
-### 🏷️ Top categories
+---
+
+### 🔌 Example 2: Using any OpenAI-compatible local server (LM Studio, vLLM, llama.cpp)
+
+Most open LLM runners expose a local OpenAI-compatible endpoint (`http://localhost:1234/v1` for LM Studio, `http://localhost:8000/v1` for vLLM). You can summarize filtered records without sending data to external servers:
 
 ```python
-import pandas  # load the pandas library for working with tables
-import matplotlib.pyplot  # load the matplotlib plotting library
+import pandas  # load pandas to filter the TSV file locally
+from openai import OpenAI  # load the OpenAI SDK, which works with local OpenAI-compatible servers
 
-dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
+# Point the client at your local model server (no API key or internet required)
+client = OpenAI(base_url="http://localhost:1234/v1", api_key="not-needed")
 
-top_category_counts = dataframe["<category-column>"].value_counts().head(15)  # count each category and keep the 15 most common
-top_category_counts.sort_values().plot(kind="barh", figsize=(8, 6), title="Most common categories")  # draw a horizontal bar chart with the largest bar at the top
-matplotlib.pyplot.tight_layout()  # adjust spacing so labels are not cut off
-matplotlib.pyplot.savefig("top_categories.png", dpi=150)  # save the chart as an image file
+dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # load the TSV keeping all columns as text
+filtered_rows = dataframe.head(15).to_markdown(index=False)  # filter to a small subset first so it fits in context
+
+completion = client.chat.completions.create(
+    model="local-model",  # replace with the model identifier loaded in LM Studio / vLLM
+    messages=[
+        {
+            "role": "system",
+            "content": (
+                "You summarize public law enforcement disclosure records objectively. "
+                "Never treat a complaint or record as proof of guilt. "
+                "Highlight missing fields and remind the user to verify officer identity via Tax ID."
+            ),
+        },
+        {
+            "role": "user",
+            "content": f"Summarize the patterns in these 15 sample records:\n\n{filtered_rows}",
+        },
+    ],
+)
+
+print(completion.choices[0].message.content)  # print the local LLM's summary
 ```
 
-### 🗺️ By precinct (R)
+---
 
-```r
-library(dplyr)  # load dplyr for counting and filtering rows
-library(ggplot2)  # load ggplot2 for drawing charts
-library(readr)  # load readr for reading delimited files
+### 🛡️ Guardrails when prompting LLMs on LELU data
 
-dataframe <- read_tsv("<folder>/<dataset>.tsv", col_types = cols(.default = "c"))  # read the tab-separated file, keeping every column as text
+Include these instructions in your system prompt whenever an LLM analyzes or summarizes LELU records:
 
-dataframe |>  # start with the data and pipe it into the next step
-  count(`<precinct-column>`, sort = TRUE) |>  # count records per precinct, largest first
-  slice_head(n = 20) |>  # keep only the top 20 precincts
-  ggplot(aes(reorder(`<precinct-column>`, n), n)) +  # set up the chart with precincts ordered by their counts
-  geom_col() +  # draw one bar per precinct
-  coord_flip() +  # turn the bars sideways so names are easy to read
-  labs(x = NULL, y = "Records", title = "Records by precinct (top 20)")  # set the axis labels and chart title
-```
-
-### 🔥 Month-by-year heatmap
-
-```python
-import pandas  # load the pandas library for working with tables
-import matplotlib.pyplot  # load the matplotlib plotting library
-import seaborn  # load the seaborn library for drawing heatmaps
-
-dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
-
-parsed_dates = pandas.to_datetime(dataframe["<date-column>"], errors="coerce").dropna()  # convert the date column to dates and drop rows with missing or bad dates
-year_by_month_counts = (  # start building a table of counts with years as rows and months as columns
-    pandas.DataFrame({"year": parsed_dates.dt.year, "month": parsed_dates.dt.month})  # make a small table holding each date's year and month
-    .value_counts()  # count how many records fall in each year and month pair
-    .unstack(fill_value=0)  # turn months into columns and fill empty cells with zero
-    .sort_index()  # sort the rows by year
-)  # finish building the table
-seaborn.heatmap(year_by_month_counts, cmap="YlOrRd")  # draw the heatmap using a yellow-orange-red color scale
-matplotlib.pyplot.title("Records by year and month")  # add a title to the chart
-matplotlib.pyplot.savefig("heatmap.png", dpi=150)  # save the chart as an image file
-```
-
-### 🧩 Missing-data chart
-
-```python
-import pandas  # load the pandas library for working with tables
-import matplotlib.pyplot  # load the matplotlib plotting library
-
-dataframe = pandas.read_csv("<folder>/<dataset>.tsv", sep="\t", dtype=str)  # read the tab-separated file, keeping every column as text
-
-missing_percentage_by_column = dataframe.isna().mean().sort_values(ascending=False).head(20) * 100  # find the share of blank cells per column as a percentage and keep the 20 highest
-missing_percentage_by_column.plot(kind="barh", figsize=(8, 6), title="% missing by column")  # draw a horizontal bar chart of missing percentages
-matplotlib.pyplot.tight_layout()  # adjust spacing so labels are not cut off
-matplotlib.pyplot.savefig("missing.png", dpi=150)  # save the chart as an image file
-```
-
-### 💡 Ideas
-
-- 📈 Trends over time
-- 🗺️ Geographic breakdowns
-- 🏷️ Category or outcome comparisons
-- 🕳️ Where data is missing, and what that says about disclosure
-- 🔗 Cross-folder comparison (see the caution on identifiers below)
+1. **🔑 Require Tax ID for officer matching:** Instruct the model never to merge records across folders based on name, rank, or shield number alone.
+2. **⚖️ Preserve legal framing:** Require the model to distinguish between _allegations_, _substantiated findings_, _lawsuits_, and _administrative records_—never state that a record proves misconduct.
+3. **🧮 Compute with code, not tokens:** Have the LLM output SQL/Python for counts, dates, and aggregations rather than asking it to count rows in its head.
+4. **🏷️ Ground in `.yml` definitions:** Always pass the folder's `.yml` file alongside column headers so the model uses Legal Aid's exact field definitions and caveats.
 
 ---
 
